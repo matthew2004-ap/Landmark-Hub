@@ -29,38 +29,53 @@ A full-stack web application for campus dining and lifestyle management, built w
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd landmark-hub
 ```
 
-2. Install root dependencies:
+1. Install root dependencies:
+
 ```bash
 npm install
 ```
 
-3. Install client dependencies:
+1. Install client dependencies:
+
 ```bash
 cd client
 npm install
 cd ..
 ```
 
-4. Build the client:
+1. Build the client:
+
 ```bash
 npm run build
 ```
 
-5. Start the server:
+1. Start the server:
+
 ```bash
 npm start
 ```
 
 The application will be available at `http://localhost:3001`
 
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=3001
+NODE_ENV=production
+```
+
 ### Development
 
 For development with hot reload:
+
 ```bash
 # Terminal 1: Start the backend
 npm run dev
