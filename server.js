@@ -2,14 +2,23 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3001;
 const rootDir = __dirname;
 const dataFile = path.join(rootDir, "data", "store.json");
 
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(rootDir, "client", "build")));
 
 function readStore() {
@@ -30,6 +39,10 @@ function sendText(res, statusCode, message) {
 }
 
 // API routes
+app.get("/api/health", (req, res) => {
+  sendJson(res, 200, { status: "OK", timestamp: new Date().toISOString() });
+});
+
 app.get("/api/platform-data", (req, res) => {
   const store = readStore();
   const payload = {

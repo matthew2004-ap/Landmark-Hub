@@ -27,7 +27,7 @@ const db = {
    },
 };
 
-// ─── ANTHROPIC AI ────────────────────────────────────────────────────────────
+//────────────────────────────────────────────────────────────
 async function askAI(systemPrompt, userMessage) {
    const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
