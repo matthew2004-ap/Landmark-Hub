@@ -1,24 +1,16 @@
-const http = require("http");
+const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const { URL } = require("url");
+const cors = require("cors");
 
+const app = express();
 const port = process.env.PORT || 3001;
 const rootDir = __dirname;
 const dataFile = path.join(rootDir, "data", "store.json");
 
-const mimeTypes = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "application/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml",
-  ".ico": "image/x-icon"
-};
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(rootDir, "client", "build")));
 
 function readStore() {
   const raw = fs.readFileSync(dataFile, "utf8");
@@ -30,135 +22,107 @@ function writeStore(data) {
 }
 
 function sendJson(res, statusCode, payload) {
-  res.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
-  res.end(JSON.stringify(payload));
+  res.status(statusCode).json(payload);
 }
 
 function sendText(res, statusCode, message) {
-  res.writeHead(statusCode, { "Content-Type": "text/plain; charset=utf-8" });
-  res.end(message);
+  res.status(statusCode).send(message);
 }
 
-function collectRequestBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk;
-      if (body.length > 1e6) {
-        req.destroy();
-        reject(new Error("Payload too large"));
-      }
-    });
-    req.on("end", () => resolve(body));
-    req.on("error", reject);
-  });
-}
-
-function handleApi(req, res, url) {
-  if (req.method === "GET" && url.pathname === "/api/platform-data") {
-    const store = readStore();
-    const payload = {
-      stats: store.stats,
-      featuredMenu: store.featuredMenu,
-      vendors: store.vendors,
-      testimonials: store.testimonials,
-      recentSubmissions: store.submissions
-        .slice()
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5)
-    };
-    sendJson(res, 200, payload);
-    return true;
-  }
-
-  if (req.method === "POST" && url.pathname === "/api/contact") {
-    collectRequestBody(req)
-      .then((body) => {
-        const parsed = JSON.parse(body || "{}");
-        const name = String(parsed.name || "").trim();
-        const email = String(parsed.email || "").trim();
-        const organization = String(parsed.organization || "").trim();
-        const message = String(parsed.message || "").trim();
-
-        if (!name || !email || !message) {
-          sendJson(res, 400, { error: "Name, email, and message are required." });
-          return;
-        }
-
-        const store = readStore();
-        const submission = {
-          id: `msg-${Date.now()}`,
-          name,
-          email,
-          organization,
-          message,
-          createdAt: new Date().toISOString()
-        };
-
-        store.submissions.unshift(submission);
-        writeStore(store);
-        sendJson(res, 201, {
-          message: "Inquiry received successfully.",
-          submission
-        });
-      })
-      .catch((error) => {
-        const statusCode = error.message === "Payload too large" ? 413 : 400;
-        sendJson(res, statusCode, { error: "Invalid request body." });
-      });
-    return true;
-  }
-
-  if (req.method === "GET" && url.pathname === "/api/inquiries") {
-    const store = readStore();
-    sendJson(res, 200, {
-      count: store.submissions.length,
-      submissions: store.submissions
-    });
-    return true;
-  }
-
-  return false;
-}
-
-function serveStatic(req, res, pathname) {
-  const requestPath = pathname === "/" ? "/index.html" : pathname;
-  const normalized = path.normalize(requestPath).replace(/^(\.\.[/\\])+/, "");
-  const relativePath = normalized.replace(/^[/\\]+/, "");
-  const filePath = path.join(rootDir, relativePath);
-
-  if (!filePath.startsWith(rootDir)) {
-    sendText(res, 403, "Forbidden");
-    return;
-  }
-
-  fs.readFile(filePath, (error, content) => {
-    if (error) {
-      if (error.code === "ENOENT") {
-        sendText(res, 404, "File not found");
-      } else {
-        sendText(res, 500, `Server error: ${error.code}`);
-      }
-      return;
-    }
-
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = mimeTypes[ext] || "application/octet-stream";
-    res.writeHead(200, { "Content-Type": contentType });
-    res.end(content);
-  });
-}
-
-const server = http.createServer((req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-
-  if (handleApi(req, res, url)) {
-    return;
-  }
-
-  serveStatic(req, res, url.pathname);
+// API routes
+app.get("/api/platform-data", (req, res) => {
+  const store = readStore();
+  const payload = {
+    stats: store.stats,
+    featuredMenu: store.featuredMenu,
+    vendors: store.vendors,
+    testimonials: store.testimonials,
+    recentSubmissions: store.submissions
+      .slice()
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5)
+  };
+  sendJson(res, 200, payload);
 });
 
-server.listen(port, () => {
+app.post("/api/contact", (req, res) => {
+  const { name, email, organization, message } = req.body;
+  if (!name || !email || !message) {
+    return sendJson(res, 400, { error: "Name, email, and message are required." });
+  }
+  const store = readStore();
+  const submission = {
+    id: `msg-${Date.now()}`,
+    name,
+    email,
+    organization,
+    message,
+    createdAt: new Date().toISOString()
+  };
+  store.submissions.unshift(submission);
+  writeStore(store);
+  sendJson(res, 201, { message: "Inquiry received successfully.", submission });
+});
+
+app.get("/api/inquiries", (req, res) => {
+  const store = readStore();
+  sendJson(res, 200, { count: store.submissions.length, submissions: store.submissions });
+});
+
+// New APIs for the React app
+app.get("/api/orders", (req, res) => {
+  const store = readStore();
+  sendJson(res, 200, store.orders || []);
+});
+
+app.post("/api/orders", (req, res) => {
+  const store = readStore();
+  store.orders = req.body;
+  writeStore(store);
+  sendJson(res, 200, { success: true });
+});
+
+app.get("/api/reviews", (req, res) => {
+  const store = readStore();
+  sendJson(res, 200, store.reviews || []);
+});
+
+app.post("/api/reviews", (req, res) => {
+  const store = readStore();
+  store.reviews = req.body;
+  writeStore(store);
+  sendJson(res, 200, { success: true });
+});
+
+app.get("/api/complaints", (req, res) => {
+  const store = readStore();
+  sendJson(res, 200, store.complaints || []);
+});
+
+app.post("/api/complaints", (req, res) => {
+  const store = readStore();
+  store.complaints = req.body;
+  writeStore(store);
+  sendJson(res, 200, { success: true });
+});
+
+app.get("/api/menu", (req, res) => {
+  const store = readStore();
+  sendJson(res, 200, store.menu || {});
+});
+
+app.post("/api/menu", (req, res) => {
+  const store = readStore();
+  store.menu = req.body;
+  writeStore(store);
+  sendJson(res, 200, { success: true });
+});
+
+// Serve React app for any other route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(rootDir, "client", "build", "index.html"));
+});
+
+app.listen(port, () => {
   console.log(`Landmark Hub full-stack app is running at http://localhost:${port}`);
 });
