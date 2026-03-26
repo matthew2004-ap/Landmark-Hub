@@ -1,0 +1,85 @@
+{
+  "stats": {
+    "ordersToday": 1284,
+    "activeVendors": 16,
+    "satisfaction": 4.8,
+    "uptime": "99.9%",
+    "serviceLocations": 120,
+    "dailySessionsCapacity": 4500,
+    "fasterDiscovery": 92
+  },
+  "featuredMenu": [
+    {
+      "id": 1,
+      "name": "Signature Jollof Bowl",
+      "meta": "Ready in 12 mins",
+      "price": "NGN 2,500",
+      "category": "meals"
+    },
+    {
+      "id": 2,
+      "name": "Grilled Chicken Wrap",
+      "meta": "Healthy option",
+      "price": "NGN 3,000",
+      "category": "meals"
+    },
+    {
+      "id": 3,
+      "name": "Campus Combo Pack",
+      "meta": "Top seller",
+      "price": "NGN 4,200",
+      "category": "premium"
+    },
+    {
+      "id": 4,
+      "name": "Fresh Juice Bar",
+      "meta": "Wellness counter",
+      "price": "NGN 1,200",
+      "category": "services"
+    }
+  ],
+  "vendors": [
+    {
+      "id": 1,
+      "name": "Harvest Kitchen",
+      "focus": "Daily meals",
+      "serviceTime": "7:00 AM - 9:00 PM"
+    },
+    {
+      "id": 2,
+      "name": "Pantry Express",
+      "focus": "Fast snacks",
+      "serviceTime": "8:00 AM - 10:00 PM"
+    },
+    {
+      "id": 3,
+      "name": "Prime Catering Desk",
+      "focus": "Events and premium trays",
+      "serviceTime": "On request"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "quote": "The platform gives our campus dining operation a polished digital presence and makes vendor coordination easier.",
+      "name": "Operations Lead",
+      "organization": "University Dining Office"
+    },
+    {
+      "id": 2,
+      "quote": "Students immediately understand where to order, what is available, and how fast service will be.",
+      "name": "Student Affairs Manager",
+      "organization": "Campus Services"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "seed-001",
+      "name": "Amina Yusuf",
+      "email": "amina@example.com",
+      "organization": "Landmark Hospitality",
+      "message": "We want a student ordering portal with vendor dashboards.",
+      "createdAt": "2026-03-23T14:12:00.000Z"
+    }
+  ]
+}

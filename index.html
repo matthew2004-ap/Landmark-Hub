@@ -1,69 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landmark Hub | Eat, Enjoy and Live Healthy </title>
-    <!-- React and ReactDOM -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel for on-the-fly transformation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        body { margin: 0; padding: 0; background: #0A2E1C; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Landmark Hub is a professional campus dining and lifestyle platform for ordering meals, discovering vendors, and managing hospitality experiences.">
+  <title>Landmark Hub | Campus Dining and Lifestyle Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="root"></div>
+  <div class="site-shell">
+    <header class="topbar" id="top">
+      <div class="container nav-wrap">
+        <a class="brand" href="#top" aria-label="Landmark Hub home">
+          <span class="brand-mark">L</span>
+          <span class="brand-text">
+            <strong>Landmark Hub</strong>
+            <small>Campus dining, reimagined</small>
+          </span>
+        </a>
 
-    <script>
-        // Mock window.storage for the app to work
-        window.storage = {
-            get: async (key, isJson) => {
-                const val = localStorage.getItem(key);
-                return val ? { value: val } : null;
-            },
-            set: async (key, value, isJson) => {
-                localStorage.setItem(key, value);
-                return true;
-            }
-        };
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-        // Mock import/export for Babel standalone
-        window.React = React;
-        window.ReactDOM = ReactDOM;
-    </script>
+        <nav class="site-nav" id="siteNav">
+          <a href="#services">Services</a>
+          <a href="#solutions">Solutions</a>
+          <a href="#showcase">Showcase</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a class="nav-cta" href="#contact">Request Demo</a>
+        </nav>
+      </div>
+    </header>
 
-    <!-- The JSX code needs some tweaks to run in Babel standalone without a bundler -->
-    <!-- Specifically, we'll remove the import statement and use the global React instead -->
-    <script type="text/babel" data-type="module">
-        import { useState, useEffect, useRef, useCallback } from "react";
-        // Since we're using esm.sh or similar, we can import from CDNs
-    </script>
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">Professional Web Application</p>
+            <h1>The standard digital experience for modern campus hospitality.</h1>
+            <p class="hero-text">
+              Landmark Hub helps schools, food courts, and student communities manage dining, vendor operations,
+              service requests, and customer communication from one polished platform.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#contact">Launch Your Platform</a>
+              <a class="button button-secondary" href="#showcase">See the Experience</a>
+            </div>
+            <div class="hero-proof">
+              <div>
+                <strong id="uptimeValue">24/7</strong>
+                <span>digital ordering</span>
+              </div>
+              <div>
+                <strong>4 mins</strong>
+                <span>average checkout flow</span>
+              </div>
+              <div>
+                <strong>99.9%</strong>
+                <span>uptime-ready architecture</span>
+              </div>
+            </div>
+          </div>
 
-    <!-- Wait, simpler: let's just fetch the JSX file, remove imports, and evaluate it -->
-    <script type="text/babel">
-        async function loadApp() {
-            const response = await fetch('landmark_cafe_v2.jsx');
-            let code = await response.text();
-            
-            // Remove the import statement from the top
-            code = code.replace(/import\s+\{\s*useState,\s*useEffect,\s*useRef,\s*useCallback\s*\}\s*from\s*"react";/, 
-                                'const { useState, useEffect, useRef, useCallback } = React;');
-            
-            // Create a component from the code
-            // The code ends with "export default function App() { ... }"
-            // We need to make it accessible to render
-            code = code.replace(/export\s+default\s+function\s+App/, 'function App');
-            code += '\nconst root = ReactDOM.createRoot(document.getElementById("root"));\nroot.render(<App />);';
+          <div class="hero-panel reveal">
+            <div class="dashboard-card">
+              <div class="card-head">
+                <span class="live-pill">Live platform preview</span>
+                <span class="muted">Operations Dashboard</span>
+              </div>
 
-            // Use Babel to transform and run the code
-            const transformed = Babel.transform(code, { presets: ['react'] }).code;
-            const script = document.createElement('script');
-            script.textContent = transformed;
-            document.body.appendChild(script);
-        }
-        loadApp();
-    </script>
+              <div class="metric-row">
+                <article class="metric-card accent-gold">
+                  <span>Orders today</span>
+                  <strong id="ordersTodayValue">0</strong>
+                  <small>Live platform data</small>
+                </article>
+                <article class="metric-card accent-green">
+                  <span>Active vendors</span>
+                  <strong id="activeVendorsValue">0</strong>
+                  <small>Connected on the backend</small>
+                </article>
+              </div>
+
+              <article class="signal-card">
+                <div>
+                  <p class="signal-title">Student Satisfaction</p>
+                  <strong id="satisfactionValue">0/5 rating</strong>
+                </div>
+                <div class="signal-bars" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </article>
+
+              <article class="menu-preview">
+                <div class="menu-head">
+                  <h2>Popular Menu</h2>
+                  <span>Today</span>
+                </div>
+                <div class="menu-list" id="featuredMenu"></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section data-section" id="platform">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Platform Data</p>
+            <h2>A real full-stack flow with backend content and saved inquiries.</h2>
+            <p>
+              The website now reads menu, vendor, testimonial, and inquiry data from the server instead of hardcoded browser-only content.
+            </p>
+          </div>
+
+          <div class="backend-grid">
+            <article class="backend-card reveal">
+              <div class="card-title-row">
+                <h3>Vendor Directory</h3>
+                <span class="backend-badge">API</span>
+              </div>
+              <div class="backend-list" id="vendorList"></div>
+            </article>
+
+            <article class="backend-card reveal">
+              <div class="card-title-row">
+                <h3>Recent Inquiries</h3>
+                <span class="backend-badge">Stored</span>
+              </div>
+              <div class="backend-list" id="submissionList"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="partners">
+        <div class="container partner-strip reveal">
+          <span>Built for campuses</span>
+          <span>Vendor-friendly</span>
+          <span>Mobile-first</span>
+          <span>Publish-ready</span>
+          <span>Secure checkout flows</span>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Core Services</p>
+            <h2>A complete website and web app foundation, not just a landing page.</h2>
+            <p>
+              The experience is designed to feel credible to users, flexible for operators, and ready for publishing on a real domain.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card reveal">
+              <h3>Ordering Experience</h3>
+              <p>Clear product browsing, meal highlights, fast calls to action, and responsive layouts across phones, tablets, and desktop screens.</p>
+            </article>
+            <article class="feature-card reveal">
+              <h3>Vendor Visibility</h3>
+              <p>Feature cafeterias, cafes, and service partners with a structured presentation that builds trust and improves discoverability.</p>
+            </article>
+            <article class="feature-card reveal">
+              <h3>Operations Storytelling</h3>
+              <p>Show live stats, service levels, testimonials, and quality benchmarks in a way that makes the platform feel established.</p>
+            </article>
+            <article class="feature-card reveal">
+              <h3>Deployment Friendly</h3>
+              <p>Simple static assets and a lightweight Node server make local previewing and basic hosting straightforward.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt-section" id="solutions">
+        <div class="container split-layout">
+          <div class="split-copy reveal">
+            <p class="eyebrow">Solutions</p>
+            <h2>Designed for schools, food courts, residences, and premium campus brands.</h2>
+            <p>
+              Landmark Hub presents your operation as a dependable service brand with a clean digital front door, operational clarity, and modern conversion-focused design.
+            </p>
+            <ul class="check-list">
+              <li>Responsive user interface with accessible spacing and readable typography</li>
+              <li>Professional content sections for trust, product discovery, and inquiries</li>
+              <li>Interactive filtering for menu highlights and service categories</li>
+              <li>Expandable FAQ and mobile navigation for a complete site flow</li>
+            </ul>
+          </div>
+
+          <div class="solution-stack reveal">
+            <article class="stack-card">
+              <span class="stack-label">Students</span>
+              <h3>Find meals fast</h3>
+              <p>Browse featured meals, offers, and service promises in a polished interface that feels intuitive from first visit.</p>
+            </article>
+            <article class="stack-card">
+              <span class="stack-label">Vendors</span>
+              <h3>Operate with confidence</h3>
+              <p>Present availability, service times, and specialties in a way that supports conversion and credibility.</p>
+            </article>
+            <article class="stack-card">
+              <span class="stack-label">Management</span>
+              <h3>Track platform value</h3>
+              <p>Communicate revenue potential, satisfaction metrics, and operating consistency with executive-friendly visuals.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="showcase">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Showcase</p>
+            <h2>Featured experiences your audience can understand immediately.</h2>
+          </div>
+
+          <div class="filter-bar reveal" id="filterBar">
+            <button class="filter-chip active" data-filter="all">All</button>
+            <button class="filter-chip" data-filter="meals">Meals</button>
+            <button class="filter-chip" data-filter="services">Services</button>
+            <button class="filter-chip" data-filter="premium">Premium</button>
+          </div>
+
+          <div class="showcase-grid" id="showcaseGrid">
+            <article class="showcase-card reveal" data-category="meals premium">
+              <span class="card-tag">Premium meal plan</span>
+              <h3>Executive Dining Packages</h3>
+              <p>Scheduled meal bundles, curated weekly menus, and premium presentation for staff and hosted events.</p>
+            </article>
+            <article class="showcase-card reveal" data-category="services">
+              <span class="card-tag">Operations</span>
+              <h3>Vendor Management</h3>
+              <p>Organize kitchen partners, service points, and availability windows in one structured experience.</p>
+            </article>
+            <article class="showcase-card reveal" data-category="meals">
+              <span class="card-tag">Student favorite</span>
+              <h3>Quick Order Menus</h3>
+              <p>Promote high-demand items with concise information, clear timing, and strong visual hierarchy.</p>
+            </article>
+            <article class="showcase-card reveal" data-category="premium services">
+              <span class="card-tag">Brand growth</span>
+              <h3>Campus Lifestyle Portal</h3>
+              <p>Extend beyond food into bookings, announcements, partner experiences, and branded communication.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt-section" id="testimonials">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Testimonials</p>
+            <h2>Trust signals fetched from the backend.</h2>
+          </div>
+          <div class="testimonial-grid" id="testimonialGrid"></div>
+        </div>
+      </section>
+
+      <section class="section metrics-section">
+        <div class="container metrics-grid reveal">
+          <article>
+            <strong data-counter="120">0</strong>
+            <span>service locations supported</span>
+          </article>
+          <article>
+            <strong data-counter="4500">0</strong>
+            <span>daily user sessions capacity</span>
+          </article>
+          <article>
+            <strong data-counter="92">0</strong>
+            <span>percent faster service discovery</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section alt-section" id="pricing">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Packages</p>
+            <h2>Choose a rollout level that matches where your brand is today.</h2>
+          </div>
+
+          <div class="pricing-grid">
+            <article class="pricing-card reveal">
+              <p class="price-tier">Starter Site</p>
+              <h3>Professional presence</h3>
+              <strong>Landing-ready</strong>
+              <p>Best for institutions that want a clean public-facing website with strong brand presentation.</p>
+            </article>
+            <article class="pricing-card featured reveal">
+              <p class="price-tier">Business Platform</p>
+              <h3>Standard web application</h3>
+              <strong>Most popular</strong>
+              <p>Ideal for campus dining services that need conversion-focused pages, engagement sections, and app-style interactions.</p>
+            </article>
+            <article class="pricing-card reveal">
+              <p class="price-tier">Enterprise Rollout</p>
+              <h3>Multi-service ecosystem</h3>
+              <strong>Scalable foundation</strong>
+              <p>For full hospitality ecosystems with vendors, operational analytics, and custom digital workflows.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="container faq-layout">
+          <div class="section-heading reveal">
+            <p class="eyebrow">FAQ</p>
+            <h2>Questions teams usually ask before they publish.</h2>
+          </div>
+
+          <div class="faq-list">
+            <article class="faq-item reveal">
+              <button class="faq-question" type="button">Is this ready to publish on a live domain?</button>
+              <div class="faq-answer">
+                <p>Yes. The site uses standard HTML, CSS, and JavaScript with a simple Node server for local preview, which makes it straightforward to host on most platforms.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-question" type="button">Can this become a larger web application later?</button>
+              <div class="faq-answer">
+                <p>Yes. The structure is clean enough to extend into a fuller app with backend APIs, authentication, dashboards, and database-driven content.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-question" type="button">Will it work well on mobile devices?</button>
+              <div class="faq-answer">
+                <p>Yes. The layout is mobile-first and includes responsive navigation, flexible grids, and touch-friendly interaction targets.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div class="container contact-card reveal">
+          <div class="contact-copy">
+            <p class="eyebrow">Contact</p>
+            <h2>Request a launch-ready digital presence for Landmark Hub.</h2>
+            <p>
+              This page now works as a professional front-facing website. If you want, it can be extended next into booking flows,
+              admin dashboards, payments, or real vendor data.
+            </p>
+            <div class="contact-status">
+              <p><strong>Stack</strong> HTML, CSS, JavaScript, Node.js HTTP API</p>
+              <p><strong>Persistence</strong> JSON data store for menu, vendors, testimonials, and inquiries</p>
+              <p><strong>Ready for next step</strong> authentication, database, dashboard modules, payments</p>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contactForm">
+            <label>
+              Full name
+              <input type="text" name="name" placeholder="Your name" required>
+            </label>
+            <label>
+              Email address
+              <input type="email" name="email" placeholder="name@example.com" required>
+            </label>
+            <label>
+              Organization
+              <input type="text" name="organization" placeholder="School, brand, or company">
+            </label>
+            <label>
+              Project goal
+              <textarea name="message" rows="4" placeholder="Tell us what you want the website or platform to do." required></textarea>
+            </label>
+            <button class="button button-primary" type="submit">Send Request</button>
+            <p class="form-note" id="formNote" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
